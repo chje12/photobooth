@@ -4,6 +4,7 @@ import cv2
 cap = cv2.VideoCapture(0)  # 0: default camera
 # cap = cv2.VideoCapture("test.mp4") #동영상 파일에서 읽기
 # 테스트 
+# 추가 테스트
 while cap.isOpened():
     # 카메라 프레임 읽기
     success, frame = cap.read()
