@@ -11,5 +11,5 @@ pip install opencv-python
 ~~~
 /test/videoCapture.py   //카메라 동작 
 
-
+version2 22
 ~~~
