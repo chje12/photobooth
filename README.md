@@ -2,8 +2,9 @@
 
 ### 설치방법 
 ~~~
-pip install opencv-python
-pip install eel 
+pip install opencv-python  //opencv 설치
+pip install eel  //크롬 확장
+pip install Pillow //이미지 처리 설치
 
 ~~~
 
