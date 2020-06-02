@@ -5,6 +5,8 @@
 pip install opencv-python  //opencv 설치
 pip install eel  //크롬 확장
 pip install Pillow //이미지 처리 설치
+    http://pythonstudy.xyz/python/article/406-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%B2%98%EB%A6%AC-Pillow
+pip install pillow_lut
 
 ~~~
 
