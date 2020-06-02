@@ -1,5 +1,6 @@
 import cv2
 
+# 선언
 cap = cv2.VideoCapture(0)  # 0: default camera
 # cap = cv2.VideoCapture("test.mp4") #동영상 파일에서 읽기
 
