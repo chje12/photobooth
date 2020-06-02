@@ -2,6 +2,6 @@
 
 ### 설치방법 
 ~~~
-
+pip install opencv-python
 
 ~~~
