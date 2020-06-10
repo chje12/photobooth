@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIOSK</title>
+    <link rel="stylesheet" href="static/css/jquery-ui.css">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/swiper.min.css">
+
+    <script type="text/javascript" src="/eel.js"></script>
+    <script type="text/javascript" src="static/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="static/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="static/js/circle-progress.js"></script>
+    <script type="text/javascript" src="static/js/swiper.min.js"></script>
+    <script type="text/javascript" src="static/js/script.js"></script>
+    <script>
+      </script>
+    <script>
+
+        var callback_count_number = null;
+        var toggleFullScreen = 0;
+
+        eel.expose(resize_capture);
+        function resize_capture() {
+            screen_init()
+         }
+        
+        eel.expose(load_json_list);
+        function load_json_list(json_list){
+            console.log(json_list);
+            for(var i=0,len=json_list.length;i<len;i++){
+                filename = json_list[i].split(".")[0];                
+                $("#importFile").append("<option value='"+json_list[i]+"' >"+filename+"</option>");
+            }
+        }
+
+        eel.expose(load_cube_list);
+        function load_cube_list(cube_list){
+            for(var i=0,len=cube_list.length;i<len;i++){
+                filename = cube_list[i].split(".")[0];     
+                $(".radio_container").append('<label for="'+filename+'">'+filename+'</label>');
+                $(".radio_container").append('<input type="radio" id="'+filename+'" value="'+filename+'" name="filter"/>');
+            }  
+            $(".radio_container").append('<label for="None">None</label>');
+            $(".radio_container").append('<input type="radio" id="None" value="None" name="filter"/>');
+
+            $(".radio_container input").checkboxradio();
+
+            $("[name='filter']").on("click",function(){
+                eel.set_lut_file($(this).val());
+            })
+        }
+
+        // 인터페이스 캡쳐이미지 로딩.
+        eel.expose(js_imshow);
+        function js_imshow(imgdata) {
+            console.log("js_imshow ");
+            if(piosk.getStatus() == 'setting'){
+                $("#filter_img").attr("src", "data:image/jpeg;base64," + imgdata);
+            }else if(piosk.getStatus() == 'photograph'){
+                $("#stream_img").attr("src", "data:image/jpeg;base64," + imgdata);
+            }
+
+        }
+
+        // 인터페이스 템플릿 셋팅.
+        eel.expose(setup_template_file);
+        function setup_template_file(templateObj) {
+            piosk.setTemplates(templateObj);
+            console.log(templateObj);
+            alphabets = ['A','B','C','D','E','F','G','H','I','J'];
+            $(".import_list").html('');
+            for(i=0,len=templateObj.templates.length;i<len;i++){
+                template = templateObj.templates[i]
+                $(".import_list").append('<li><span>'+alphabets[i]+'</span><span class="txt">'+template.name+'</span></li>');
+            }
+        }
+
+        // 인터페이스 프린트 완료.
+        eel.expose(print_end);
+        function print_end() {
+            if(piosk.getStatus() == 'end'){
+                $(".print_ing").addClass("hide");
+                $(".print_end").removeClass("hide");
+                goHome();
+            }
+        }
+
+
+        function screen_init(flag){
+            eel.set_stream_off()
+
+            // 화면별셋팅
+            if(piosk.getStatus() == 'setting'){
+                eel.set_stream_on();
+
+            }else if(piosk.getStatus() == 'main'){
+                piosk.doInit();
+                disp_counter();
+                if($("#template_list").html() == ""){
+                    var templates = piosk.getTemplates().templates;
+
+                    $("#template_list").html("");
+                    for(var i=0,len=templates.length;i<len;i++){
+                        $("#template_list").append('<div class="swiper-slide"><img data-src="'+templates[i].main_image+'" class="swiper-lazy"><div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div></div>');
+                    }
+                    
+                    // 촬영중
+                    $('.swiper-slide').unbind( "click" );
+                    $('.swiper-slide').on("click",function(e){
+                        //화면 왼쪽 오른쪽 선택한 것 넣기
+                        var pos = 0;
+                        if (e.pageX >= ($(window).width() / 2)){
+                            pos = 1;
+                        }
+
+                        piosk.setCurrent(activeIndex, pos);
+                        eel.set_current(piosk.getCurrent());
+                        eel.set_template(piosk.getTemplates(activeIndex));
+                        let index = 0;
+                        index = piosk.getCapturedNumber();
+                        if(piosk.getCurrent().type == "6*2" || piosk.getCurrent().type == "2*6" ){
+                            index = ((index+1)*2)-2
+                        }
+                        eel.set_aspect_radio(piosk.getCurrent().pos[index], $(".photoImg").height());
+                        $(".banner").each(function(){
+                            $(this).html('');
+                            $(this).append('<img src="'+piosk.getCurrent().banner_image+'">');
+                            console.log(piosk.getCurrent().banner_image);;
+                        })
+
+                        goNext();
+                    });
+                    
+                    Swiper.use(myPlugin);
+                    var swiper = new Swiper('.swiper-container', {
+                        // Enable lazy loading
+                        lazy: true,
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable: true,
+                        },
+                        navigation: {
+                            nextEl: '.swiper-button-next',
+                            prevEl: '.swiper-button-prev',
+                        },
+                    });
+                }
+                
+                let imgHeight = $(window).height();
+                imgHeight = imgHeight - 3;
+                $(".swiper-slide").height(imgHeight);
+
+            }else if(piosk.getStatus() == 'photograph'){
+                $("[id^='capture_count_']").removeClass("current");
+                $("[id^='capture_count_']").removeClass("complete");
+
+                let currentInfo = piosk.getCurrent();
+                $("#capture_status_display").html("");
+                let w = (currentInfo.capture_count*88)+((currentInfo.capture_count -1)*35);
+                $("#capture_status_display").width(w);
+                for(var i=0,len=currentInfo.capture_count;i<len;i++){
+                    $("#capture_status_display").append("<span id='capture_count_"+i+"'>"+(i+1)+"</span>");
+                }
+                disp_counter();
+                
+                let imgHeight = $(window).height();
+                imgHeight = imgHeight - $(".photograph").find(".hearder").height();
+                imgHeight = imgHeight - $(".photograph").find(".controll_btn").height();
+                if($(".photograph").find(".banner").length > 0){
+                    imgHeight = imgHeight - $(".photograph").find(".banner").height();
+                }
+                imgHeight = imgHeight - 3;
+                $(".photoImg").height(imgHeight);
+                
+                if($(".photoImg").width() > $(".photoImg").height()){
+                    $("#stream_img").css("width", "auto");
+                    $("#stream_img").height($(".photoImg").height() - 10);
+                }else if($(".photoImg").width() < $(".photoImg").height()){
+                    $("#stream_img").width($(".photoImg").width()-10);
+                    $("#stream_img").css("height", "auto");
+                }
+                
+                // 다음 화면 이동 버튼      
+                if(piosk.getCapturedNumber() == piosk.getCurrent().capture_count){
+                    $("#btn_next").removeClass("btn_next_dim");
+                    $("#btn_next").addClass("btn_next");
+                    $('#btn_next').on("click",function(){
+                        goNext();
+                    });
+                }else{
+                    $("#btn_next").addClass("btn_next_dim");
+                    $("#btn_next").removeClass("btn_next");
+                    $('#btn_next').unbind("click");
+                }
+                eel.set_stream_on();
+
+            }else if(piosk.getStatus() == 'print'){
+                let imgHeight = $(window).height();
+                imgHeight = imgHeight - $(".print").find(".hearder").height();
+                imgHeight = imgHeight - $(".print").find(".banner").height();
+                imgHeight = imgHeight - 3;
+                $(".print").find(".content").height(imgHeight);
+                
+                $('.print_count').each(function(){
+                    $(this).removeClass("active");
+                });
+
+            }else if(piosk.getStatus() == 'end'){
+                let imgHeight = $(window).height();
+                imgHeight = imgHeight - $(".end").find(".hearder").height();
+                imgHeight = imgHeight - $(".end").find(".banner").height();
+                imgHeight = imgHeight - 3;
+                $(".end").find(".content").height(imgHeight);
+
+                if(flag != "resize" ){
+                    eel.start_printing()
+                    $(".print_ing").removeClass("hide");
+                    $(".print_end").addClass("hide");
+                    // 출력중
+                    $('#print_progress').circleProgress({
+                        startAngle: -Math.PI / 4 * 2,
+                        size: 250,
+                        value: 1,
+                        lineCap: 'round',
+                        thickness : 12,
+                        emptyFill: 'rgba(255, 255, 255, 1)',
+                        fill: { color: '#e797a7' },
+                        animation : {duration : 4000}
+                    });
+                }
+
+
+            }
+        }
+
+        // 프린터 완료 체크 함수.
+        function check_print_complete(){
+            goNext();
+        }
+
+        function goNext(){
+            // current hide
+            let selector = piosk.getStatus();
+            $("."+selector).addClass("hide");
+            // status next
+            piosk.goNext();
+            // next show
+            selector = piosk.getStatus();
+            $("."+selector).removeClass("hide");
+
+            setTimeout(function(){// 촬영중
+                screen_init()
+            }, 100);
+        }
+
+        function goPrev(){
+            // current hide
+            let selector = piosk.getStatus();
+            $("."+selector).addClass("hide");
+            // status next
+            piosk.goPrev();
+            // next show
+            selector = piosk.getStatus();
+            $("."+selector).removeClass("hide");
+            setTimeout(function(){// 촬영중
+                screen_init()
+            }, 100);
+        }
+
+        function goHome(){
+            // current hide
+            let selector = piosk.getStatus();
+            $("."+selector).addClass("hide");
+            // status next
+            piosk.goHome();
+            // next show
+            selector = piosk.getStatus();
+            $("."+selector).removeClass("hide");
+
+            setTimeout(function(){// 촬영중
+                screen_init()
+                eel.set_init()
+            }, 100);
+        }
+
+        function disp_counter(){
+            $("[id^='capture_count_']").removeClass("current");
+            $("[id^='capture_count_']").removeClass("complete");
+
+            for( var i=0,len=piosk.getCapturedNumber();i<len;i++){
+                console.log(i);
+                $("#capture_count_"+i.toString()).removeClass("current")
+                $("#capture_count_"+i.toString()).addClass("complete")
+            }
+            // $("#capture_count_"+piosk.getCapturedNumber().toString()).addClass("current")
+        }
+        function count_down(count){
+            if(count > 0){
+                $(".count_down").removeClass("hide");
+                $(".count_down").html(count.toString());
+                count -= 1
+                setTimeout(function(){// 촬영중
+                    count_down(count);
+                }, 1000);
+            }else{
+                $(".count_down").addClass("hide");
+                $(".count_down").html("");
+            }
+        }
+
+        function photo_click(){
+            if(piosk.getCapturedNumber() < piosk.getCurrent().capture_count){
+                count_down(piosk.getCurrent().count_down);
+                
+                if(piosk.getCurrent().movie_yn == "Y"){
+                    eel.set_movie_saving_on(); // 동영상 저장 ON
+                }
+
+                $('.btn_photo').unbind("click");
+                $('.photoImg').unbind("click");
+                $('.btn_photo').parents('.circle').toggleClass('on');
+                // 촬영중
+                let durate = piosk.getCurrent().count_down *1000;
+
+                $('#photo_progress').circleProgress({
+                    startAngle: -Math.PI / 4 * 2,
+                    size: 190,
+                    value: 1,
+                    lineCap: 'round',
+                    thickness : 9,
+                    emptyFill: 'rgba(0, 0, 0, 0.15)',
+                    fill: { color: '#ff0082' },
+                    animation : {duration : durate}
+                });
+                if(callback_count_number != null){
+                    clearInterval(callback_count_number);
+                    callback_count_number = null;
+                }
+                callback_count_number = setInterval(function(){
+                    if($("#capture_count_"+piosk.getCapturedNumber().toString()).hasClass("current")){
+                        $("#capture_count_"+piosk.getCapturedNumber().toString()).removeClass("current")
+                    }else{
+                        $("#capture_count_"+piosk.getCapturedNumber().toString()).addClass("current")
+                    }
+                },300);
+                
+                setTimeout(function(){// 촬영중
+                    if(callback_count_number != null){
+                        clearInterval(callback_count_number);
+                        callback_count_number = null;
+                    }
+
+                    // 플래쉬 처리.
+                    $(".width_bg").removeClass("hide");
+                    setTimeout(function(){// 플래쉬 삭제
+                        $(".width_bg").addClass("hide");
+                    },500);
+
+                    //사운드 처리.
+                    if(piosk.getCapturedNumber() != piosk.getCurrent().capture_count){
+                        eel.play_sound()
+                    }
+
+                    $('.btn_photo').parents('.circle').toggleClass('on');
+                    $('#photo_progress').circleProgress({
+                        startAngle: -Math.PI / 4 * 2,
+                        size: 190,
+                        value: 0,
+                        lineCap: 'round',
+                        thickness : 9,
+                        emptyFill: 'rgba(0, 0, 0, 0.15)',
+                        fill: { color: '#ff0082' },
+                        animation : {duration : 100}
+                    });
+
+                    eel.set_capturing_on(); // 이미지캡쳐.
+                    if(piosk.getCurrent().movie_yn == "Y"){
+                        eel.set_movie_saving_off(); // 동영상 저장 OFF
+                    }
+                    piosk.addCaptureNumber(); // 캡쳐숫자 증가.
+                    disp_counter(); // 촬영 count display
+                    eel.set_aspect_radio(piosk.getCurrent().pos[piosk.getCapturedNumber()], $(".photoImg").height())
+                
+                    $('.btn_photo').on("click",function(){
+                        if(piosk.getCapturedNumber() == piosk.getCurrent().capture_count){
+                            console.log("don't active")
+                        }else{
+                            photo_click()
+                        }
+                    });
+                    $('.photoImg').on("click",function(){
+                        if(piosk.getCapturedNumber() == piosk.getCurrent().capture_count){
+                            console.log("don't active")
+                        }else{
+                            photo_click()
+                        }
+                    });
+                    
+                    if(piosk.getCapturedNumber() == piosk.getCurrent().capture_count){
+                        $("#btn_next").removeClass("btn_next_dim");
+                        $("#btn_next").addClass("btn_next");
+                        $('#btn_next').on("click",function(){
+                            goNext();
+                        });
+                    }
+                }, durate)
+            }
+        }
+        $(function () {
+            $( "#importFile" ).selectmenu();
+
+            // 촬영중
+            $('#photo_progress').circleProgress({
+                startAngle: -Math.PI / 4 * 2,
+                size: 190,
+                value: 0,
+                lineCap: 'round',
+                thickness : 9,
+                emptyFill: 'rgba(0, 0, 0, 0.15)',
+                fill: { color: '#ff0082' }
+            });
+            eel.set_stream_on();
+        });
+        $(document).ready(function(){
+            $(".btn_go").on("click",function(){
+                alert("클릭");
+                if($(".import_list").find("li").length < 1){
+                    alert("행사를 적용 하여 주시기 바랍니다.");
+                    return;
+                }
+                goNext();
+            });
+            $(".btn_back").on("click",function(){
+                goPrev();
+            });
+            $(".btn_home").on("click",function(){
+                goHome();
+            });
+            $(".photoImg").on("click",function(){
+                photo_click()
+            })
+            $('.btn_photo').on("click",function(){
+                photo_click()
+            });
+            $('.btn_import').on("click",function(){
+                eel.load_json_file($("#importFile  option:selected").val());
+            });
+            
+            $('.btn_out').on("click",function(){
+                piosk.backCaptureNumber();
+                eel.removeCaptureNumber(); // 캡처 카운트 증가 / 감소 / reload
+                disp_counter();
+                screen_init("resize");
+            });
+            $('.print_count').on("click",function(){
+                $('.print_count').each(function(){
+                    $(this).removeClass("active");
+                });
+                $(this).addClass("active");
+                eel.set_print_count(parseInt($(this).attr("data-print-count")));
+                
+                setTimeout(function(){// 촬영중
+                    goNext()
+                }, 200)
+
+            });
+            window.addEventListener('resize', function() {
+                screen_init("resize");
+            }, true);
+            
+            $(".toggle_f11").on("click",function(){
+                if(screen.availWidth == $(window).width()){
+                    document.webkitExitFullscreen();
+                }else{
+                    document.documentElement.webkitRequestFullscreen();
+                }
+                screen_init("resize");
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="wrap">
+        <h1 class="blind">포토 박스</h1>
+        <!-- setting -->
+        <div class="setting">
+            <div class="content">
+                <div class="row">
+                    <p class="tit">필터 선택</p>
+                    <div class="fliter_control">
+                        <div class="pull_left">
+                            <img src="" class="img" id="filter_img">
+                        </div>
+                        <div class="pull_right">
+                            <div class="radio_container">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <p class="tit">행사불러오기</p>
+                    <div class="import">
+                        <select name="importFile" id="importFile" class="select" style="min-height:60px;">
+                        </select>
+                        <button type="button" class="btn_import"><span>적용하기</span></button>
+                    </div>
+                    <ul class="import_list">
+                    </ul>
+                </div>
+            </div>
+            <div class="btn_area">
+                <button type="button" class="btn_go"><span>GO</span></button>
+            </div>
+        </div>
+        <!-- main -->
+        <div class="main hide">
+            <div class="swiper-container">
+                <div class="swiper-wrapper" id="template_list"></div>
+            </div>
+            <!-- Navigation -->
+            <div class="swiper-button-next swiper-button-white"></div>
+            <div class="swiper-button-prev swiper-button-white"></div>
+        </div>
+        <!-- 촬용중 -->
+        <div class="photograph hide">
+            <div class="hearder">
+                <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>
+                <div class="count" id="capture_status_display"></div>
+                <div class="pull_right"><button type="button" class="btn_home"><span class="blind">메인으로 가기</span></button></div>
+            </div>
+            <div class="content">
+                <div class="photoImg">
+                    <span class="width_bg hide"></span>
+                    <span class="count_down hide">3</span>
+                    <img class="img" id="stream_img" >
+                </div>
+                <div class="controll_btn">
+                    <button type="button" class="btn_out"><span class="blind btn_before_photo">다시찍기</span></button>
+                    <span class="circle" id="photo_progress"><button type="button" class="btn_photo"><span class="blind">촬영</span></button></span>
+                    <button type="button" class="btn_next_dim" id="btn_next"><span class="blind btn_next_photo">다음</span></button>
+                </div>
+            </div>
+            <!-- 배너 영역 -->
+            <div class="banner" id="banner-photo">                
+                <img src="static/images/banner-sample.png">
+            </div>
+        </div>
+        <!-- 프린트 -->
+        <div class="print hide">
+            <div class="hearder">
+                <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>
+                <div class="pull_right"><button type="button" class="btn_home"><span class="blind">메인으로 가기</span></button></div>
+            </div>
+            <div class="content">
+                <div class="tit"><img src="static/images/t_print.png" alt="몇장을 출력할까요?"></div>
+                <div class="count">
+                    <!-- 클릭 했을때 active -->
+                    <button type="button" class="print_count" data-print-count="2">2</button>
+                    <button type="button" class="print_count" data-print-count="4">4</button>
+                    <button type="button" class="print_count" data-print-count="6">6</button>
+                    <button type="button" class="print_count" data-print-count="8">8</button>
+                    <button type="button" class="print_count" data-print-count="10">10</button>
+                    <button type="button" class="print_count" data-print-count="12">12</button>
+                </div>
+            </div>
+            <!-- 배너 영역 -->
+            <div class="banner">                
+                <img src="static/images/banner-sample.png">
+            </div>
+        </div>
+        
+        <!-- 프린트중 -->
+        <div class="end hide">
+            <div class="hearder">
+                <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>
+                <div class="pull_right"><button type="button" class="btn_home"><span class="blind">메인으로 가기</span></button></div>
+            </div>
+            <div class="content">
+                <div class="tit print_ing" ><img src="static/images/t_print2.png" alt="출력중입니다."></div>
+                <div class="tit print_end hide"><img src="static/images/t_print3.png" alt="사진을 찾아가세요."></div>
+                <span id="print_progress" class="progress"></span>
+            </div>
+            <!-- 배너 영역 -->
+            <div class="banner">                
+                <img src="static/images/banner-sample.png">
+            </div>
+        </div>
+    </div>
+</body>
+</html>

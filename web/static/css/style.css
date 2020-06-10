@@ -1,0 +1,627 @@
+@charset "UTF-8";
+
+/* font */
+@font-face {
+    font-family: "Nanum Gothic";
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/NanumGothic-Regular.eot);
+    src: url(../fonts/NanumGothic-Regular.eot?#iefix) format("embedded-opentype"), url(../fonts/NanumGothic-Regular.woff2) format("woff2"), url(../fonts/NanumGothic-Regular.woff) format("woff"), url(../fonts/NanumGothic-Regular.ttf) format("truetype")
+  }
+  
+  @font-face {
+    font-family: "Nanum Gothic";
+    font-style: normal;
+    font-weight: 700;
+    src: url(../fonts/NanumGothic-Bold.eot);
+    src: url(../fonts/NanumGothic-Bold.eot?#iefix) format("embedded-opentype"), url(../fonts/NanumGothic-Bold.woff2) format("woff2"), url(../fonts/NanumGothic-Bold.woff) format("woff"), url(../fonts/NanumGothic-Bold.ttf) format("truetype")
+  }
+  
+  @font-face {
+    font-family: "Nanum Gothic";
+    font-style: normal;
+    font-weight: 800;
+    src: url(../fonts/NanumGothic-ExtraBold.eot);
+    src: url(../fonts/NanumGothic-ExtraBold.eot?#iefix) format("embedded-opentype"), url(../fonts/NanumGothic-ExtraBold.woff2) format("woff2"), url(../fonts/NanumGothic-ExtraBold.woff) format("woff"), url(../fonts/NanumGothic-ExtraBold.ttf) format("truetype")
+ }
+
+
+ @font-face {
+  font-family: "TTHayanbaram";
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/TTHayanbaramR.eot);
+  src: url(../fonts/TTHayanbaramR.eot?#iefix) format("embedded-opentype"), url(../fonts/TTHayanbaramR.woff) format("woff"), url(../fonts/TTHayanbaramR.ttf) format("truetype")
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  line-height: 1.4;
+  font-family: "Nanum Gothic", sans-serif;
+  font-size: 16px;
+  background: #fff;
+  color: #656565;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+table th{
+  font-weight: bold;
+}
+
+a {
+  text-decoration: none;
+}
+button{
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+button:focus, a:focus {outline:none !important;}
+button span{
+  position: relative;
+}
+
+
+/* basic */
+.blind {
+  position: absolute;
+  left: -10000px;
+  top: -10000px;
+  width: 0;
+  height: 0;
+  font-size: 0
+}
+.pull_left{
+  float: left;
+}
+.pull_right{
+  float: right;
+}
+
+
+/* radio_container */
+.radio_container .ui-button{
+  font-family: "Nanum Gothic";
+  border: none !important;
+  background: transparent !important;
+  color: #666 !important;
+  font-size: 18px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 40px;
+  border-radius: 0 !important;
+
+}
+.radio_container .ui-checkboxradio-radio-label .ui-icon-background{
+  width: 40px !important;
+  height: 40px !important;
+  background: #fff !important;
+  border-radius: 50% !important;
+  box-shadow: none !important;
+  margin-top: 0;
+}
+.radio_container .ui-checkboxradio-radio-label.ui-checkboxradio-checked .ui-icon{
+  background: #f8a9ba !important;
+  border: 9px solid #fff !important;  
+}
+.radio_container .ui-checkboxradio-icon-space{
+  display: inline-block;
+  width: 7px;
+}
+.ui-visual-focus {
+  box-shadow: none !important;
+}
+
+.wrap{
+  width: 100%;
+  height: 100%;
+}
+
+
+/* setting */
+.setting{
+  max-width: 880px;
+  width: 100%;
+  margin: 0 auto;
+  background: #f1f1f1;
+  border: 1px solid #bcb5b9;
+}
+.setting .content{
+  padding: 38px 0;
+}
+.setting .tit{
+  font-size: 24px;
+  color: #484848;
+  font-weight: bold;
+  padding-bottom: 20px;
+}
+.setting .row{
+  padding: 0 40px;
+}
+.setting .row:first-child{
+  border-bottom: 1px solid #dcdcdc;
+  padding-bottom: 25px;
+  margin-bottom: 35px;
+}
+.fliter_control{
+  overflow: hidden;
+}
+.fliter_control .pull_left {
+  width: 340px;
+  height: 210px;
+  border: 1px solid #979797;
+  text-align: center;
+  background-color: #d8d8d8;
+}
+.fliter_control .pull_right {
+  width: calc(100% - 380px);
+}
+
+.fliter_control .pull_left .img{
+  height: 100%;
+  width: 100%;
+}
+.fliter_control .ui-checkboxradio-label{
+  width: 47%;
+  float: left;
+  text-align: left;
+  margin: 0 0 15px 0 !important;
+}
+
+.import_list li{
+  height: 54px;
+  line-height: 54px;
+  border-top: 2px solid #e6e6e6;
+}
+.import_list li:first-child{
+  border-top: none;
+}
+.import_list li span{
+  display: inline-block;
+}
+.import{
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+.import_list li span:first-child{
+  font-size: 24px;
+  color: #484848;
+  font-weight: bold;
+  width: 54px;
+}
+.import_list li span:last-child{
+  font-size: 18px;
+  color: #666666;
+}
+.import_list{
+  margin-bottom: 20px;
+} 
+
+.import .ui-selectmenu-button.ui-button{
+  float: left;
+  width: calc(100% - 157px);
+  height: 60px;
+  line-height: 60px;
+  background: #fff;
+  border-radius: 7px 0 0 7px;
+  margin: 0;
+  border: none;
+  padding: 0 20px;
+}
+.import .ui-selectmenu-button.ui-button .ui-icon-triangle-1-s{
+  width: 19px;
+  height: 60px;
+  background: url(../images/i_arrow.png) 97% center no-repeat;
+}
+.btn_import{
+  float: left;
+  width: 157px;
+  height: 60px;
+  background: #a5a5a5;
+  border-radius: 0 7px 7px 0;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+}
+.btn_go{
+  font-family: "TTHayanbaram";
+  width: 100%;
+  height: 80px;
+  color: #fff;
+  background: #e797a7;
+  font-size: 34px;
+}
+
+
+
+/* photograph */
+.hearder {
+  height: 150px;
+  text-align: center;
+  background: #fff;;
+}
+.photograph .count{
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - 300px);
+  height: 150px;
+}
+.photograph .count span{
+  font-family: "TTHayanbaram";
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  line-height: 70px;
+  border-radius: 50%;
+  background: #d8d8d8;
+  text-align: center;
+  font-size: 41px;
+  color: #fff;
+  margin: 18px;
+}
+
+.photograph .count .complete{
+  background: #e797a7;
+  margin: 18px;
+}
+.photograph .count .current{
+  border: 18px solid #e7648266;
+  box-sizing: content-box;
+  background: #d8d8d8;
+  margin: 0px;
+  background-clip:content-box;
+}
+.btn_back,.btn_home{
+  width: 150px;
+  height: 150px;
+  background: url(../images/btn-page-back.svg) 40px center no-repeat;
+}
+.btn_home{
+  background: url(../images/btn-home.svg) center center no-repeat;
+}
+.btn_out{
+  width: 100px;
+  height: 100px;
+  background: url(../images/btn-go-previous-cut-active.svg) center center no-repeat;
+}
+.btn_next_dim{
+  width: 100px;
+  height: 100px;
+  background: url(../images/btn_next_dim.svg) center center no-repeat;
+}
+.btn_next{
+  width: 100px;
+  height: 100px;
+  background: url(../images/btn_next_active.svg) center center no-repeat;
+}
+.btn_photo{
+  position: absolute;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+  width: 125px;
+  height: 125px;
+  background: transparent;
+}
+
+.btn_photo:before,
+.btn_photo:after{
+  position: absolute;
+  content:'';
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left:50%;
+  transform: translate(-50%, -50%);
+
+}
+.btn_photo:before{
+  border-radius: 50%;
+  background-color: #faacd0;
+  background-image: linear-gradient(60deg, #faacd0 0%, #afffe6 100%);
+}
+
+.btn_photo:after{
+  display: none;
+  background: url(../images/heart.png) center center no-repeat;
+}
+.circle.on .btn_photo:before{
+  display: none;
+}
+.circle.on .btn_photo:after{
+  display: block;
+}
+
+
+.photoImg{
+  position: relative;
+  background: #000;
+  height: 695px;
+  text-align: center;
+
+}
+.photoImg .count_down{
+  font-family: "TTHayanbaram";
+  font-size: 250px;
+  color: #fff;
+}
+.photoImg .count_down, .photoImg .width_bg{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+} 
+.photoImg .width_bg{
+  /* display: none; */
+  background: rgba(255, 255, 255, 0.2);
+  width: 100%;
+  height: 100%;
+}
+.photoImg .img{
+  width: auto;
+  height: 99%;
+}
+
+.photoImg:after{
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-image: linear-gradient(0, rgba(255,255,255,0.4) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px);
+  background-size: 346px 343px;
+  background-position: 50% 50%;
+}
+
+
+.controll_btn{
+  height: 246px;
+  text-align: center;
+  line-height: 246px;
+}
+.controll_btn > *{
+  vertical-align: middle;
+}
+.controll_btn .circle{
+  display: inline-block;
+  width: 190px;
+  height: 190px;
+  position: relative;
+  margin: 0 75px;
+}
+.controll_btn .circle:after{
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #d8d8d8;
+  top: 20px;
+  left: 200px;
+}
+.controll_btn .circle.on:after{
+  background: #ff0082;
+}
+.banner img{
+  width: 100%;
+  height: auto;
+}
+.print,.end {
+  text-align: center;
+  background: #d8d8d8;
+}
+
+.print .count{
+  width: 700px;
+  display: inline-block;
+  margin: 0 auto;
+  text-align: center;
+}
+.print .count button{
+  font-family: "TTHayanbaram";
+  width: 295px;
+  height: 145px;
+  border-radius: 70px;
+  color: #e797a7;
+  font-size: 64px;
+  margin: 20px 25px;
+  box-shadow: 0px 4px 5px 3px rgba(0, 0, 0, 0.1);
+  background: #f7f7f7;
+}
+.print .count button.active{
+  background: #e797a7;
+  color: #fff;
+}
+.print .count button:active{
+  box-shadow: none;
+}
+.print .content, .end .content {
+  position: relative;
+  height: 940px;
+}
+.print .tit, .end .tit{
+   padding: 100px 0 50px 0;
+}
+.progress{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -125px;
+  margin-top: -90px;
+  
+}
+.hide {
+  display: none;
+}
+
+.swiper-container {
+  width: 100%;
+  height: 100%;
+}
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #000;
+}
+.swiper-slide img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  -ms-transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
+.toggle_f11{
+  position: absolute;
+  width:100%;
+  height:200px;
+  bottom: 0px;
+  z-index: 99999;
+}
+@media (max-width: 880px) {
+
+}
