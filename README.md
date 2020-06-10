@@ -14,6 +14,4 @@ pip install win32printing  //프린터 설치
 ### 동작설명
 ~~~
 /test/videoCapture.py   //카메라 동작 
-
-version2 22
 ~~~
