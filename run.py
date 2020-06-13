@@ -83,7 +83,7 @@ def start_printing():
     global current, capture_image, capture_movie, template, lut
     ## 원본 프린트.
     filename = datetime.today().strftime("%Y%m%d%H%M%S")
-    os.makedirs("product/"+template["id"]+"/original", exist_ok=True)
+    os.makedirs("file/image/"+template["id"]+"/original", exist_ok=True)
     
     bgimg = cv2.imread(current["compose"]) #selected image
     bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
@@ -93,14 +93,14 @@ def start_printing():
         ## save image
         image = capture_image[index-1]
 
-        fullPath = "product/"+template["id"]+"/original/"+filename+"_org_"+str(index)+".jpg"
+        fullPath = "file/image/"+template["id"]+"/original/"+filename+"_org_"+str(index)+".jpg"
         cv2.imwrite(fullPath, image)
         
         if(lut != None):
-            os.makedirs("product/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
-            lut_Path = "product/"+template["id"]+"/original/"+lut+"/"+filename+"_org_"+str(index)+".jpg"
+            os.makedirs("file/image/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
+            lut_Path = "file/image/"+template["id"]+"/original/"+lut+"/"+filename+"_org_"+str(index)+".jpg"
             cv2.imwrite(lut_Path, image)
-            hefe = load_cube_file("cube/"+lut+".cube")
+            hefe = load_cube_file("file/cube/"+lut+".cube")
             im = Image.open(lut_Path) ##########LOAD IMAGWE
             im.filter(hefe).save(lut_Path,quality=100)
             image = cv2.imread(lut_Path)
@@ -136,16 +136,16 @@ def start_printing():
 
             bgimg[ _item[1]:_item[1] + frame.shape[0], _item[0]:_item[0] + frame.shape[1]] = frame ## Image Addition
 
-    os.makedirs("product/"+template["id"]+"/photo", exist_ok=True)
-    cv2.imwrite("product/"+template["id"]+"/photo/"+filename+"_photo.jpg", bgimg); ## 캡처 이미지 저장
+    os.makedirs("file/image/"+template["id"]+"/photo", exist_ok=True)
+    cv2.imwrite("file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg", bgimg); ## 캡처 이미지 저장
 
-    ticket  = Image.open("product/"+template["id"]+"/photo/"+filename+"_photo.jpg")
-    os.makedirs("product/"+template["id"]+"/ticket" , exist_ok=True)
+    ticket  = Image.open("file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg")
+    os.makedirs("file/image/"+template["id"]+"/ticket" , exist_ok=True)
     if(current["type"] == "2*6"):
         ticket = ticket.crop((19, 19, 1798+19, 598+19)) 
     elif(current["type"] == "6*2"):
         ticket = ticket.crop((26, 19, 598+26, 1798+19))        
-    ticket.save("product/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
+    ticket.save("file/image/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
 
     ## 동영상
     makingVideo.put(current.copy(), capture_movie.copy(), filename, lut, template["id"])
@@ -166,7 +166,7 @@ def start_printing():
         PHYSICALHEIGHT = 111
 
         printer_name = win32print.GetDefaultPrinter ()
-        file_name = "product/"+template["id"]+"/photo/"+filename+"_photo.jpg"
+        file_name = "file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg"
 
         hDC = win32ui.CreateDC ()
         hDC.CreatePrinterDC (printer_name)
@@ -191,7 +191,7 @@ def start_printing():
 ############################################################
 @eel.expose
 def play_sound():
-    winsound.PlaySound('sound/shutter.wav', winsound.SND_ALIAS | winsound.SND_ASYNC) #start wav
+    winsound.PlaySound('file/sound/shutter.wav', winsound.SND_ALIAS | winsound.SND_ASYNC) #start wav
 
 ############################################################
 ## 스트리밍 On / off
@@ -381,7 +381,7 @@ def load_json_list():
 
 def load_cube_list():
     global cube_list
-    path = "./cube"
+    path = "./file/cube"
     file_list = os.listdir(path)
     cube_list = [file for file in file_list if file.endswith(".cube")]    
     
