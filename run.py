@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageWin
 from pillow_lut import load_hald_image
 from pillow_lut import load_cube_file
+from configparser import ConfigParser
 import numpy as np
 import webbrowser
 import cv2
@@ -35,6 +36,10 @@ lut = None
 movie_saving_count = 0
 json_list = []
 cube_list = []
+
+## 설정파일 읽기
+parser = ConfigParser()
+parser.read('config.ini')
 
 ############################################################
 ## 초기화.
@@ -83,7 +88,7 @@ def start_printing():
     global current, capture_image, capture_movie, template, lut
     ## 원본 프린트.
     filename = datetime.today().strftime("%Y%m%d%H%M%S")
-    os.makedirs("file/image/"+template["id"]+"/original", exist_ok=True)
+    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original", exist_ok=True)
     
     bgimg = cv2.imread(current["compose"]) #selected image
     bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
@@ -93,12 +98,12 @@ def start_printing():
         ## save image
         image = capture_image[index-1]
 
-        fullPath = "file/image/"+template["id"]+"/original/"+filename+"_org_"+str(index)+".jpg"
+        fullPath = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+filename+"_org_"+str(index)+".jpg"
         cv2.imwrite(fullPath, image)
         
         if(lut != None):
-            os.makedirs("file/image/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
-            lut_Path = "file/image/"+template["id"]+"/original/"+lut+"/"+filename+"_org_"+str(index)+".jpg"
+            os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
+            lut_Path = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/"+filename+"_org_"+str(index)+".jpg"
             cv2.imwrite(lut_Path, image)
             hefe = load_cube_file("file/cube/"+lut+".cube")
             im = Image.open(lut_Path) ##########LOAD IMAGWE
@@ -136,16 +141,16 @@ def start_printing():
 
             bgimg[ _item[1]:_item[1] + frame.shape[0], _item[0]:_item[0] + frame.shape[1]] = frame ## Image Addition
 
-    os.makedirs("file/image/"+template["id"]+"/photo", exist_ok=True)
-    cv2.imwrite("file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg", bgimg); ## 캡처 이미지 저장
+    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/photo", exist_ok=True)
+    cv2.imwrite(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+filename+"_photo.jpg", bgimg); ## 캡처 이미지 저장
 
-    ticket  = Image.open("file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg")
-    os.makedirs("file/image/"+template["id"]+"/ticket" , exist_ok=True)
+    ticket  = Image.open(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+filename+"_photo.jpg")
+    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/ticket" , exist_ok=True)
     if(current["type"] == "2*6"):
         ticket = ticket.crop((19, 19, 1798+19, 598+19)) 
     elif(current["type"] == "6*2"):
         ticket = ticket.crop((26, 19, 598+26, 1798+19))        
-    ticket.save("file/image/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
+    ticket.save(parser.get('settings', 'image')+"/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
 
     ## 동영상
     makingVideo.put(current.copy(), capture_movie.copy(), filename, lut, template["id"])
@@ -166,7 +171,7 @@ def start_printing():
         PHYSICALHEIGHT = 111
 
         printer_name = win32print.GetDefaultPrinter ()
-        file_name = "file/image/"+template["id"]+"/photo/"+filename+"_photo.jpg"
+        file_name = parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+filename+"_photo.jpg"
 
         hDC = win32ui.CreateDC ()
         hDC.CreatePrinterDC (printer_name)
@@ -191,7 +196,7 @@ def start_printing():
 ############################################################
 @eel.expose
 def play_sound():
-    winsound.PlaySound('file/sound/shutter.wav', winsound.SND_ALIAS | winsound.SND_ASYNC) #start wav
+    winsound.PlaySound(parser.get('settings', 'sound')+'/shutter.wav', winsound.SND_ALIAS | winsound.SND_ASYNC) #start wav
 
 ############################################################
 ## 스트리밍 On / off
@@ -293,7 +298,7 @@ def set_aspect_radio(target_template, client_height=None):
 @eel.expose
 def load_json_file(json_file_name):
     global template_file
-    with open(json_file_name, "rb") as fin:
+    with open(parser.get('settings', 'data')+"/"+json_file_name, "rb") as fin:
         template_file = json.load(fin)
         eel.setup_template_file(template_file)
     
@@ -355,7 +360,7 @@ def start_eel():
     """Start Eel with either production or development configuration."""
     directory = 'web'
     app = 'chrome-app'
-    page = 'main.html'
+    page = parser.get('settings', 'main')
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
     eel.spawn(loop)
@@ -374,14 +379,13 @@ def start_eel():
 ############################################################
 def load_json_list():
     global json_list
-    path = "./"
+    path = parser.get('settings', 'data')
     file_list = os.listdir(path)
     json_list = [file for file in file_list if file.endswith(".json")]
 
-
 def load_cube_list():
     global cube_list
-    path = "./file/cube"
+    path = parser.get('settings', 'cube')
     file_list = os.listdir(path)
     cube_list = [file for file in file_list if file.endswith(".cube")]    
     
