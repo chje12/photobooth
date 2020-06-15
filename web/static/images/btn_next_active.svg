@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="71px" viewBox="0 0 64 71" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>btn_next_dim</title>
+    <desc>Created with Sketch.</desc>
+    <g id="btn_next_dim" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="Group" transform="translate(4.000000, 4.000000)" stroke="#ACACAC" stroke-width="7">
+            <polygon id="Path-2" stroke-linejoin="round" transform="translate(28.000000, 31.375488) scale(-1, 1) translate(-28.000000, -31.375488) " points="56 49.5009766 56 62.7509766 0 62.7509766 0 -3.41404422e-15 56 3.55271368e-15 56 34.5009766"></polygon>
+            <polyline id="Path-3" stroke-linejoin="round" transform="translate(39.500000, 31.750000) scale(-1, 1) translate(-39.500000, -31.750000) " points="45 18 34 32 45 45.5"></polyline>
+            <line x1="10" y1="31.3754883" x2="42" y2="31.3754883" id="Path-4"></line>
+        </g>
+    </g>
+</svg>
