@@ -16,5 +16,5 @@ config['files'] = {
     'use_cdn': 'false',
     'images_path': '/my_app/images'
 }
-with open('./config.ini', 'w') as f:
+with open('./test/config.ini', 'w') as f:
       config.write(f)

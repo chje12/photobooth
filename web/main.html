@@ -426,7 +426,7 @@
         });
         $(document).ready(function(){
             $(".btn_go").on("click",function(){
-                alert("클릭");
+                //alert("클릭");
                 if($(".import_list").find("li").length < 1){
                     alert("행사를 적용 하여 주시기 바랍니다.");
                     return;
@@ -486,7 +486,9 @@
 <body>
     <div class="wrap">
         <h1 class="blind">포토 박스</h1>
-        <!-- setting -->
+        <!-- ***************************************************************** -->
+        <!-- 1 페이지 setting -->
+        <!-- ***************************************************************** -->
         <div class="setting">
             <div class="content">
                 <div class="row">
@@ -516,7 +518,9 @@
                 <button type="button" class="btn_go"><span>GO</span></button>
             </div>
         </div>
-        <!-- main -->
+        <!-- ***************************************************************** -->
+        <!-- 2 페이지 main -->
+        <!-- ***************************************************************** -->
         <div class="main hide">
             <div class="swiper-container">
                 <div class="swiper-wrapper" id="template_list"></div>
@@ -525,7 +529,9 @@
             <div class="swiper-button-next swiper-button-white"></div>
             <div class="swiper-button-prev swiper-button-white"></div>
         </div>
-        <!-- 촬용중 -->
+        <!-- ***************************************************************** -->
+        <!-- 3 페이지 촬용중 -->
+        <!-- ***************************************************************** -->
         <div class="photograph hide">
             <div class="hearder">
                 <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>
@@ -549,7 +555,9 @@
                 <img src="static/images/banner-sample.png">
             </div>
         </div>
-        <!-- 프린트 -->
+        <!-- ***************************************************************** -->
+        <!-- 4 페이지 프린트 -->
+        <!-- ***************************************************************** -->
         <div class="print hide">
             <div class="hearder">
                 <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>
@@ -573,7 +581,9 @@
             </div>
         </div>
         
+        <!-- ***************************************************************** -->
         <!-- 프린트중 -->
+        <!-- ***************************************************************** -->
         <div class="end hide">
             <div class="hearder">
                 <div class="pull_left"><button type="button" class="btn_back"><span class="blind">뒤로가기</span></button></div>

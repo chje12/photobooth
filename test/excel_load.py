@@ -1,25 +1,42 @@
-import openpyxl
+from openpyxl import load_workbook
+import json
 
-# 엑셀파일 열기
-wb = openpyxl.load_workbook('test/score.xlsx')
  
-# 현재 Active Sheet 얻기
-ws = wb.active
-# ws = wb.get_sheet_by_name("Sheet1")
+#data_only=Ture로 해줘야 수식이 아닌 값으로 받아온다.
+load_wb = load_workbook("test/score.xlsx", data_only=True)
+#시트 이름으로 불러오기
+load_ws = load_wb['Sheet1']
  
-# 국영수 점수를 읽기
-for r in ws.rows:
-    row_index = r[0].row   # 행 인덱스
-    kor = r[1].value
-    eng = r[2].value
-    math = r[3].value
-    sum = kor + eng + math
+#셀 주소로 값 출력
+print(load_ws['A1'].value)
  
-    # 합계 쓰기
-    ws.cell(row=row_index, column=5).value = sum
- 
-    print(kor, eng, math, sum)
- 
-# 엑셀 파일 저장
-#wb.save("score2.xlsx")
-#wb.close()
+#셀 좌표로 값 출력
+print(load_ws.cell(1,2).value)
+
+
+print('\n-----지정한 셀 출력-----')
+get_cells = load_ws['A1':'D2']
+for row in get_cells:
+        for cell in row:
+            print(cell.value)
+
+print('\n-----모든 행 단위로 출력-----')
+for row in load_ws.rows:
+    print(row)
+
+print('\n-----모든 열 단위로 출력-----')
+for column in load_ws.columns:
+    print(column)
+
+
+print('\n-----모든 행과 열 출력-----')
+all_values = []
+for row in load_ws.rows:
+    row_value = []
+    for cell in row:
+        row_value.append(cell.value)
+    all_values.append(row_value)
+print(all_values)
+
+
+
