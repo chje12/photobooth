@@ -15,17 +15,17 @@ piosk = {
     },
     getTemplates : function(inx){
         if (inx != undefined){
-            return this.map._templates.templates[inx];
+            return this.map._templates[inx];
         }else{
             return this.map._templates;
         }
     },
     setCurrent : function(index,pos){
 
-        for(var i=0,len=this.map._templates.templates.length;i<len;i++){
+        for(var i=0,len=this.map._templates.length;i<len;i++){
             if(i == index){
-                let tmp = this.map._templates.templates[i];
-                this.map._current = tmp.template[pos];
+                let tmp = this.map._templates[i];
+                this.map._current = tmp[pos];
                 break;
             }
         }

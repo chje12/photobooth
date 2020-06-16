@@ -27,12 +27,13 @@
             screen_init()
          }
         
-        eel.expose(load_json_list);
-        function load_json_list(json_list){
-            console.log(json_list);
-            for(var i=0,len=json_list.length;i<len;i++){
-                filename = json_list[i].split(".")[0];                
-                $("#importFile").append("<option value='"+json_list[i]+"' >"+filename+"</option>");
+        //데이터 파일 목록 표시
+        eel.expose(load_data_list);
+        function load_data_list(data_list){
+            console.log(data_list);
+            for(var i=0,len=data_list.length;i<len;i++){
+                filename = data_list[i].split(".")[0];                
+                $("#importFile").append("<option value='"+data_list[i]+"' >"+filename+"</option>");
             }
         }
 
@@ -68,12 +69,12 @@
         // 인터페이스 템플릿 셋팅.
         eel.expose(setup_template_file);
         function setup_template_file(templateObj) {
-            piosk.setTemplates(templateObj);
             console.log(templateObj);
+            piosk.setTemplates(templateObj);
             alphabets = ['A','B','C','D','E','F','G','H','I','J'];
             $(".import_list").html('');
-            for(i=0,len=templateObj.templates.length;i<len;i++){
-                template = templateObj.templates[i]
+            for(i=0,len=templateObj.length;i<len;i++){
+                template = templateObj[i]
                 $(".import_list").append('<li><span>'+alphabets[i]+'</span><span class="txt">'+template.name+'</span></li>');
             }
         }
@@ -100,7 +101,7 @@
                 piosk.doInit();
                 disp_counter();
                 if($("#template_list").html() == ""){
-                    var templates = piosk.getTemplates().templates;
+                    var templates = piosk.getTemplates();
 
                     $("#template_list").html("");
                     for(var i=0,len=templates.length;i<len;i++){
@@ -445,8 +446,10 @@
             $('.btn_photo').on("click",function(){
                 photo_click()
             });
+
+            // 1페이지 행사적용하기
             $('.btn_import').on("click",function(){
-                eel.load_json_file($("#importFile  option:selected").val());
+                eel.load_data_file($("#importFile  option:selected").val());
             });
             
             $('.btn_out').on("click",function(){

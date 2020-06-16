@@ -15,9 +15,9 @@ import time
 import os
 import win32print
 import win32ui
-#from makingvideo import MakingVideo
+from common_makingvideo import common_makingvideo
 
-#makingVideo = MakingVideo().start()
+common_makingvideo = common_makingvideo().start()
 template =None
 template_file =None
 current =None
@@ -114,7 +114,7 @@ def start_printing():
     ticket.save(parser.get('settings', 'image')+"/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
 
     ## 동영상
-    makingVideo.put(current.copy(), capture_movie.copy(), filename, lut, template["id"])
+    common_makingvideo.put(current.copy(), capture_movie.copy(), filename, lut, template["id"])
 
     ## 프린트
     global print_count

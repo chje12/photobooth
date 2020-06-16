@@ -16,16 +16,17 @@ import os
 import win32print
 import win32ui
 import sys
-#from makingvideo import MakingVideo
 
 # 패키지 모듈화
 sys.path.append("module")
 import common_sound 
 import common_print
 import common_screen
+import common_data
 
+# 카메라 인식 스타트
 cap = VideoStream(src=0).start()
-#makingVideo = MakingVideo().start()
+
 template =None
 template_file =None
 current =None
@@ -162,16 +163,7 @@ def set_aspect_radio(target_template, client_height=None):
     
     cam_pos = [x,y,w,h]
 
-############################################################
-## LOAD JSON FILE INTER FACE
-############################################################
-@eel.expose
-def load_json_file(json_file_name):
-    global template_file
-    with open(parser.get('settings', 'data')+"/"+json_file_name, "rb") as fin:
-        template_file = json.load(fin)
-        eel.setup_template_file(template_file)
-    
+   
 
 ############################################################
 ## LUT FILE SETTING
@@ -207,10 +199,10 @@ def start_eel():
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
     eel.spawn(loop)
     
-    global json_list, cube_list
+    global data_list, cube_list
     try:
         eel.resize_capture()
-        eel.load_json_list(json_list)
+        eel.load_data_list(data_list)
         eel.load_cube_list(cube_list)
         eel.start(page, size=(960,1024))
     except EnvironmentError:
@@ -247,13 +239,19 @@ def loop():
         eel.sleep(0.03)
         
 ############################################################
-## LOAD JSON FILE 
+## LOAD DATA FILE 
 ############################################################
-def load_json_list():
-    global json_list
-    path = parser.get('settings', 'data')
+#def load_json_list():
+#    global json_list
+#    path = parser.get('settings', 'data')
+#    file_list = os.listdir(path)
+#    json_list = [file for file in file_list if file.endswith(".json")]
+
+def load_data_list():
+    global data_list
+    path = parser.get('settings','data')
     file_list = os.listdir(path)
-    json_list = [file for file in file_list if file.endswith(".json")]
+    data_list = [file for file in file_list if file.endswith(".xlsx")]
 
 def load_cube_list():
     global cube_list
@@ -266,6 +264,6 @@ def load_cube_list():
 ############################################################
 if __name__ == '__main__':
     # Pass any second argument to enable debugging
-    load_json_list()
+    load_data_list()
     load_cube_list()
     start_eel()
