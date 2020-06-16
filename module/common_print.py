@@ -17,7 +17,6 @@ import win32print
 import win32ui
 #from makingvideo import MakingVideo
 
-cap = VideoStream(src=0).start()
 #makingVideo = MakingVideo().start()
 template =None
 template_file =None
