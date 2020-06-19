@@ -1,17 +1,12 @@
 from imutils.video import VideoStream
 from datetime import datetime, timedelta
 from PIL import Image, ImageWin
-from pillow_lut import load_hald_image
 from pillow_lut import load_cube_file
 from configparser import ConfigParser
 import numpy as np
-import webbrowser
 import cv2
 import eel
 import base64
-import imutils
-import json
-import time
 import os
 import win32print
 import win32ui
@@ -59,7 +54,6 @@ def set_init():
     global capture_number, print_count, capture_movie, movie_saving_count
     current = None
     stream = False
-    capturrog = False
     movie_saving = False
     #init capture_image
     capture_image = []
@@ -93,11 +87,9 @@ def start_printing():
     ## 원본 프린트.
     filename = datetime.today().strftime("%Y%m%d%H%M%S")
 
-    print(current)
-    print(capture_image)
-    print(capture_movie)
-
-
+    #print(current)
+    #print(capture_image)
+    #print(capture_movie)
     os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original", exist_ok=True)
     
     bgimg = cv2.imread(current["compose"]) #selected image
