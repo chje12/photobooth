@@ -21,10 +21,10 @@ piosk = {
         }
     },
     setCurrent : function(index,pos){
-
+        console.log("===")
         for(var i=0,len=this.map._templates.length;i<len;i++){
             if(i == index){
-                let tmp = this.map._templates[i];
+                let tmp = this.map._templates[i].template;
                 this.map._current = tmp[pos];
                 break;
             }

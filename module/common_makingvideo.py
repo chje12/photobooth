@@ -49,11 +49,15 @@ class common_makingvideo:
 				return
 			if not self.q_move.empty():
 				movie_info = self.q_move.get()
+
 				capture_movie = movie_info["capture_movie"]
 				lut = movie_info["lut"]
-				
+				print("compose_movie::",movie_info["compose_movie"])
 				bgimg = cv2.imread(movie_info["compose_movie"]) #selected image
+				print("bgimg::",bgimg)
+				
 				bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
+				print("bgimg::",bgimg)
 
 				height, width, channels  = bgimg.shape
 				os.makedirs(parser.get('settings', 'image')+"/"+movie_info["id"]+"/video", exist_ok=True)
@@ -95,11 +99,12 @@ class common_makingvideo:
 						bgimg[ _item[1]:_item[1] + frame.shape[0], _item[0]:_item[0] + frame.shape[1]] = frame ## Image Addition
 						
 						video.write(bgimg)
+						
 
 					for y in range(len(capture_movie[x]) -1, 0, -1):
 						image = capture_movie[x][y]
 						
-						if(lut != None):
+						if(lut != None):    							
 							cv2.imwrite("tmp.jpg", image)
 							hefe = load_cube_file(parser.get('settings', 'cube')+"/"+lut+".cube")
 							im = Image.open("tmp.jpg") ##########LOAD IMAGWE

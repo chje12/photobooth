@@ -116,10 +116,11 @@
                         if (e.pageX >= ($(window).width() / 2)){
                             pos = 1;
                         }
-
                         piosk.setCurrent(activeIndex, pos);
+                        console.log(piosk)
                         eel.set_current(piosk.getCurrent());
                         eel.set_template(piosk.getTemplates(activeIndex));
+                        //eel.set_print_template(piosk.getTemplates(activeIndex),piosk.getCurrent());
                         let index = 0;
                         index = piosk.getCapturedNumber();
                         if(piosk.getCurrent().type == "6*2" || piosk.getCurrent().type == "2*6" ){
