@@ -14,7 +14,7 @@ import sys
 
 # 패키지 모듈화
 sys.path.append("module")
-import common_sound 
+import common_sound
 import common_data
 from common_makingvideo import common_makingvideo
 
@@ -102,7 +102,7 @@ def start_printing():
 
         fullPath = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+filename+"_org_"+str(index)+".jpg"
         cv2.imwrite(fullPath, image)
-        
+
         if(lut != None):
             os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
             lut_Path = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/"+filename+"_org_"+str(index)+".jpg"
@@ -125,7 +125,6 @@ def start_printing():
         for i in range(0,loop_count):
             _idx = _idx + i
             _item = current['pos'][(_idx-1)]
-            
             imWidth, imHeight = im.size
 
             ## 618 721 = 603 : 704 ==> x = (618*704) / 721
@@ -154,10 +153,10 @@ def start_printing():
         ticket = ticket.crop((26, 19, 598+26, 1798+19))        
     ticket.save(parser.get('settings', 'image')+"/"+template["id"]+"/ticket/"+filename+"_ticket.jpg")
 
-    ## 동영상
+    ## 동영상 생성
     common_makingvideo.put(current.copy(), capture_movie.copy(), filename, lut, template["id"])
 
-    ## 프린트
+    ## 프린트 출력
     global print_count
     cnt_print = 0
 
@@ -172,7 +171,7 @@ def start_printing():
         PHYSICALWIDTH = 110
         PHYSICALHEIGHT = 111
 
-        printer_name = win32print.GetDefaultPrinter ()
+        printer_name = win32print.GetDefaultPrinter()
         file_name = parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+filename+"_photo.jpg"
 
         hDC = win32ui.CreateDC ()

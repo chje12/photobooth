@@ -50,12 +50,12 @@ class common_makingvideo:
 
 				capture_movie = movie_info["capture_movie"]
 				lut = movie_info["lut"]
-				print("compose_movie::",movie_info["compose_movie"])
+				#print("compose_movie::",movie_info["compose_movie"])
 				bgimg = cv2.imread(movie_info["compose_movie"]) #selected image
-				print("bgimg::",bgimg)
+				#print("bgimg::",bgimg)
 				
 				bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
-				print("bgimg::",bgimg)
+				#print("bgimg::",bgimg)
 
 				height, width, channels  = bgimg.shape
 				os.makedirs(parser.get('settings', 'image')+"/"+movie_info["id"]+"/video", exist_ok=True)
