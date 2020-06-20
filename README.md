@@ -13,6 +13,7 @@ pip install openpyxl  //excel 읽기
 pip install xlrd
 pip install pandas
 pip install Ipython
+
 ~~~
 
 ### 동작설명
