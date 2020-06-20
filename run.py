@@ -11,12 +11,26 @@ import os
 import win32print
 import win32ui
 import sys
+import logging
 
 # 패키지 모듈화
-sys.path.append("module")
+#sys.path.append("module")
 import common_sound
 import common_data
 from common_makingvideo import common_makingvideo
+
+logger = logging.getLogger('simple_example')
+logger.setLevel(logging.DEBUG)
+# 콘솔 출력을 지정합니다
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+
+# 파일 출력을 지정합니다.
+fh = logging.FileHandler(filename="run.log")
+fh.setLevel(logging.INFO)
+# add ch to logger
+logger.addHandler(ch)
+logger.addHandler(fh)
 
 
 # 카메라 인식 스타트
@@ -218,8 +232,6 @@ def set_current(current_template):
     capture_image = [None for i in range(current['capture_count'])]
     capture_movie = [[] for x in range(current['capture_count'])]
 
-
-
 ############################################################
 ## 스트리밍 On / off
 ############################################################
@@ -245,9 +257,6 @@ def set_capturing_on():
 def set_capturing_off():
     global capturing
     capturing = False
-
-
-
 
 ############################################################
 ## 캡처 카운트 증가 / 감소 / reload
@@ -398,6 +407,7 @@ def load_cube_list():
 ############################################################
 if __name__ == '__main__':
     # Pass any second argument to enable debugging
+    logging.warn(" 로그 정보 ")
     load_data_list()
     load_cube_list()
     start_eel()
