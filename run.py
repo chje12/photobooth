@@ -19,15 +19,15 @@ import common_sound
 import common_data
 from common_makingvideo import common_makingvideo
 
-logger = logging.getLogger('simple_example')
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 # 콘솔 출력을 지정합니다
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
 
 # 파일 출력을 지정합니다.
-fh = logging.FileHandler(filename="run.log")
-fh.setLevel(logging.INFO)
+fh = logging.FileHandler(filename="./run.log")
+fh.setLevel(logging.DEBUG)
 # add ch to logger
 logger.addHandler(ch)
 logger.addHandler(fh)
@@ -98,14 +98,23 @@ def set_movie_saving_off():
 def start_printing():
     ## time.sleep(3)
     global current, capture_image,template, capture_movie, lut
+    print("------------------------current-----------------------------")
     print(current)
+    print("-----------------------------------------------------")
     ## 원본 프린트.
     poto_file_name = datetime.today().strftime("%Y%m%d%H%M%S")
     #logging.warn(" 파일명 :"+ poto_file_name)
 
     os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original", exist_ok=True)
+    print("------------------------compose-----------------------------")
     print(" current[compose] :" + current["compose"])
+    print("-----------------------------------------------------")
+
     bgimg = cv2.imread(current["compose"]) #selected image
+    print("----------------------bgimg-------------------------------")
+    print(bgimg)
+    print("-----------------------------------------------------")
+
 
     #logging.warn(" bgimg :" + bgimg )
     bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
