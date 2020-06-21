@@ -34,7 +34,7 @@ def load_data_file(file_name):
     ws = load_wb.worksheets
     final = []
     for sheet in ws:
-        # sheet1 = load_wb.get_sheet_by_name('Sheet1')
+        #sheet1 = load_wb.get_sheet_by_name('Sheet1')
         # get_active_sheet()로 활성화된 시트를 불러올 수도 있습니다.
         # sheet2 = excelFile.get_active_sheet()
         res = list(sheet)
@@ -61,6 +61,7 @@ def load_data_file(file_name):
             rows.append(partFinal)
         obj["template"] = rows
         final.append(obj)
+
     j = json.dumps(final) 
     template_file = json.loads(j)
     eel.setup_template_file(template_file)

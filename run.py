@@ -98,11 +98,16 @@ def set_movie_saving_off():
 def start_printing():
     ## time.sleep(3)
     global current, capture_image,template, capture_movie, lut
+    print(current)
     ## 원본 프린트.
     poto_file_name = datetime.today().strftime("%Y%m%d%H%M%S")
+    #logging.warn(" 파일명 :"+ poto_file_name)
+
     os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original", exist_ok=True)
-    
+    print(" current[compose] :" + current["compose"])
     bgimg = cv2.imread(current["compose"]) #selected image
+
+    #logging.warn(" bgimg :" + bgimg )
     bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
 
     ## 합성
@@ -121,7 +126,7 @@ def start_printing():
             im = Image.open(lut_Path) ##########LOAD IMAGWE
             im.filter(hefe).save(lut_Path,quality=100)
             image = cv2.imread(lut_Path)
-        
+
         im = Image.fromarray(image, mode='RGB')
         loop_count = 1
         _pos = current["pos"]
