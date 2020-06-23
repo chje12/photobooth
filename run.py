@@ -408,7 +408,7 @@ def load_data_list():
     global data_list
     path = parser.get('settings','data')
     file_list = os.listdir(path)
-    data_list = [file for file in file_list if file.endswith(".xlsx")]
+    data_list = [file for file in file_list if file.endswith(".xlsx") or file.endswith(".xls")]
 
 def load_cube_list():
     global cube_list

@@ -2,6 +2,9 @@
 from configparser import ConfigParser
 import eel
 import json
+import xlrd
+import os
+import win32com.client as win32
 from openpyxl import load_workbook
 from collections import OrderedDict
 
@@ -29,8 +32,21 @@ def load_json_file(json_file_name):
 def load_data_file(file_name):
     global template_file,load_wb
     #data_only=Ture로 해줘야 수식이 아닌 값으로 받아온다.
-    load_wb = load_workbook(parser.get('settings', 'data')+"/"+file_name, data_only=True)
-    # get sheet list
+    print('--------- load data file ---------'+os.getcwd())
+    fname = parser.get('settings', 'data')+"/"+file_name
+
+    # 파일확장자 체크 xls 일경우 xlsx cervert
+    if file_name.endswith(".xls"):
+        excel = win32.gencache.EnsureDispatch('Excel.Application')
+        wb = excel.Workbooks.Open(os.getcwd() + fname)
+        wb.SaveAs(os.getcwd() + fname + "x", FileFormat=51)  # FileFormat = 51 is for .xlsx extension
+        wb.Close()
+        excel.Application.Quit()
+        load_wb = load_workbook(fname + "x", data_only=True)
+        os.remove(os.getcwd() + fname + "x") # 파일변경작업 후 파일삭제
+    else:
+        load_wb = load_workbook(fname, data_only=True)
+
     ws = load_wb.worksheets
     final = []
     for sheet in ws:
