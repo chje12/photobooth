@@ -124,3 +124,25 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=True )
 ~~~
+
+
+### 카메라 해상도 변경
+~~~
+run.py  -> from imutils.video import VideoStream : ( video ) -> webcamvideostream
+	def __init__(self, src=0, name="WebcamVideoStream"):
+		# initialize the video camera stream and read the first frame
+		# from the stream
+		self.stream = cv2.VideoCapture(cv2.CAP_DSHOW)
+		self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)   --> 추가
+		self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)  --> 추가
+		self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter.fourcc('M', 'J', 'P', 'G')) --> 추가
+		(self.grabbed, self.frame) = self.stream.read()
+
+		# initialize the thread name
+		self.name = name
+
+		# initialize the variable used to indicate if the thread should
+		# be stopped
+		self.stopped = False
+
+~~~
