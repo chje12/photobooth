@@ -29,6 +29,12 @@ git commit -m "remove file"
 git push -u origin master 입력으로 push를 해줍시다
 git rm -rf 는 원격 저장소(remote repository)와 로컬 저장소(Local repository) 모두를 지우는 명령이고
 git rm -r --cached 는 원격 저장소에 있는것만 지우는 걸로 조금의 차이가 있어요
+
+/build/
+/dist/*
+/venv/*
+/idea/*
+/file/image/*
 ~~~
 
 
