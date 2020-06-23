@@ -34,7 +34,7 @@ logger.addHandler(fh)
 
 
 # 카메라 인식 스타트
-cap = VideoStream(src=0).start()
+cap = VideoStream(src=0,width=1920,height=1080).start()
 common_makingvideo = common_makingvideo().start()
 
 
