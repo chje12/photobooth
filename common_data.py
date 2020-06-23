@@ -2,7 +2,6 @@
 from configparser import ConfigParser
 import eel
 import json
-import xlrd
 import os
 import win32com.client as win32
 from openpyxl import load_workbook
