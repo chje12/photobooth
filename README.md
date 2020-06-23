@@ -58,12 +58,13 @@ pyinstaller --noconfirm --log-level=WARN \
 
 
 성공 소스파일
-pyinstaller --onefile run.spec 
+pyinstaller run.spec 
 
              
 성공 컴파일 단일 파일
 C:\Users\jechun\AppData\Local\Programs\Python\Python38-32\Lib\site-packages\eel\eel.js;eel
 D:\work\opencv\photobooth\venv\lib\site-packages\eel\eel.js;eel
+
 pyinstaller --onefile --nowindow  --add-data "C:\Users\jechun\AppData\Local\Programs\Python\Python38-32\Lib\site-packages\eel\eel.js;eel" --add-data "web;web" --hidden-import=pkg_resources.py2_warn  --hidden-import=bottle_websocket --hidden-import=common_sound --hidden-import=common_data --hidden-import=common_makingvideo run.py
 
 ~~~
