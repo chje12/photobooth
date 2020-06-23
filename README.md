@@ -2,11 +2,18 @@
 
 ### 설치방법 
 ~~~
-pip install opencv-python  //opencv 설치
-pip install eel  //크롬 확장
-pip install Pillow //이미지 처리 설치
+-가상환경 만들기
+C:\project>python -m venv example
+C:\project>cd example
+C:\project\example>Scripts\activate.bat
+(example) C:\project\example>
+python interpreter 설정을 위의 폴더로 설정
+
+(example)pip install opencv-python  //opencv 설치
+(example)pip install eel  //크롬 확장
+(example)pip install Pillow //이미지 처리 설치
     http://pythonstudy.xyz/python/article/406-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%B2%98%EB%A6%AC-Pillow
-pip install pillow_lut
+(example)pip install pillow_lut
 pip install win32printing  //프린터 설치
 pip install configparser  //설정파일 읽기
 pip install openpyxl  //excel 읽기
