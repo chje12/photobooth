@@ -3,9 +3,15 @@
 ### 설치방법 
 ~~~
 -가상환경 만들기
+pip install virtualenv   --먼저 가상화 설치
 C:\project>python -m venv example
 C:\project>cd example
 C:\project\example>Scripts\activate.bat
+
+    windows 권한
+    >Get-ExecutionPolicy -List
+    >Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
 (example) C:\project\example>
 python interpreter 설정을 위의 폴더로 설정
 
@@ -71,9 +77,10 @@ pyinstaller run.spec
              
 성공 컴파일 단일 파일
 C:\Users\jechun\AppData\Local\Programs\Python\Python38-32\Lib\site-packages\eel\eel.js;eel
-D:\work\opencv\photobooth\venv\lib\site-packages\eel\eel.js;eel
+D:\work\venv\lib\site-packages\eel\eel.js;eel
+eel.js의 위치는 확인 후 적용
 
-pyinstaller --onefile --nowindow  --add-data "C:\Users\jechun\AppData\Local\Programs\Python\Python38-32\Lib\site-packages\eel\eel.js;eel" --add-data "web;web" --hidden-import=pkg_resources.py2_warn  --hidden-import=bottle_websocket --hidden-import=common_sound --hidden-import=common_data --hidden-import=common_makingvideo run.py
+pyinstaller --onefile --nowindow  --add-data "C:\work\work-space\venv\Lib\site-packages\eel\eel.js;eel" --add-data "web;web" --hidden-import=pkg_resources.py2_warn  --hidden-import=bottle_websocket --hidden-import=common_sound --hidden-import=common_data --hidden-import=common_makingvideo run.py
 
 ~~~
 
