@@ -8,6 +8,8 @@ import cv2
 import eel
 import base64
 import os
+import pythoncom
+import win32api
 import win32print
 import win32ui
 import sys
