@@ -167,13 +167,13 @@ def start_printing():
 
     os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/photo", exist_ok=True)
     cv2.imwrite(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+poto_file_name+"_photo.jpg", bgimg); ## 캡처 이미지 저장
-    ticket  = Image.open(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+poto_file_name+"_photo.jpg")
-    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/ticket" , exist_ok=True)
+    print_photo  = Image.open(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+poto_file_name+"_photo.jpg")
+    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/photo_print" , exist_ok=True)
     if(current["type"] == "2*6"):
-        ticket = ticket.crop((19, 19, 1798+19, 598+19)) 
+        print_photo = print_photo.crop((19, 19, 1798+19, 598+19))
     elif(current["type"] == "6*2"):
-        ticket = ticket.crop((26, 19, 598+26, 1798+19))        
-    ticket.save(parser.get('settings', 'image')+"/"+template["id"]+"/ticket/"+poto_file_name+"_ticket.jpg")
+        print_photo = print_photo.crop((26, 19, 598+26, 1798+19))
+    print_photo.save(parser.get('settings', 'image')+"/"+template["id"]+"/photo_print/"+poto_file_name+"_print.jpg")
 
     ## 동영상 생성
     common_makingvideo.put(current.copy(), capture_movie.copy(), poto_file_name, lut, template["id"])
