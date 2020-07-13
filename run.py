@@ -12,6 +12,7 @@ import pythoncom
 import win32api
 import win32print
 import win32ui
+from imageutils import *
 import sys
 import logging
 
@@ -23,6 +24,7 @@ from common_makingvideo import common_makingvideo
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
 # 콘솔 출력을 지정합니다
 ch = logging.StreamHandler()
 ch.setLevel(logging.DEBUG)
@@ -30,15 +32,14 @@ ch.setLevel(logging.DEBUG)
 # 파일 출력을 지정합니다.
 fh = logging.FileHandler(filename="./run.log")
 fh.setLevel(logging.DEBUG)
+
 # add ch to logger
 logger.addHandler(ch)
 logger.addHandler(fh)
 
-
 # 카메라 인식 스타트
 cap = VideoStream(src=0,width=1920,height=1080).start()
 common_makingvideo = common_makingvideo().start()
-
 
 template =None
 template_file =None
@@ -91,7 +92,7 @@ def set_movie_saving_on():
 def set_movie_saving_off():
     global movie_saving
     movie_saving = False
-   
+
 
 ############################################################
 ## 프린팅
@@ -99,83 +100,95 @@ def set_movie_saving_off():
 @eel.expose
 def start_printing():
     ## time.sleep(3)
-    global current, capture_image,template, capture_movie, lut
+    global current, capture_image, template, capture_movie, lut
+
     print("------------------------current-----------------------------")
-    print(current)
-    print("-----------------------------------------------------")
+    print(current                                                       )
+    print("------------------------------------------------------------")
+
     ## 원본 프린트.
     poto_file_name = datetime.today().strftime("%Y%m%d%H%M%S")
-    #logging.warn(" 파일명 :"+ poto_file_name)
+    #logging.warn(" 파일명 :" + poto_file_name)
 
-    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original", exist_ok=True)
+    settings_image = parser.get('settings', 'image')
+    template_id = template["id"]
+
+    FileUtils.force_directories('{settings_image}/{template_id}/original'.format(settings_image=settings_image
+                                                                                 , template_id=template_id))
+
     print("------------------------compose-----------------------------")
-    print(" current[compose] :" + current["compose"])
-    print("-----------------------------------------------------")
+    print(" current[compose] :" + current["compose"]                    )
+    print("------------------------------------------------------------")
 
     bgimg = cv2.imread(current["compose"]) #selected image
-    print("----------------------bgimg-------------------------------")
-    print(bgimg)
-    print("-----------------------------------------------------")
 
+    print("----------------------bgimg---------------------------------")
+    print(bgimg                                                         )
+    print("------------------------------------------------------------")
 
     #logging.warn(" bgimg :" + bgimg )
     bgimg = cv2.cvtColor(bgimg, cv2.IMREAD_COLOR)
 
     ## 합성
-    for index in range(1, len(capture_image)+1):
+    for index in range(1, len(capture_image) + 1):
         ## save image
-        image = capture_image[index-1]
-
-        fullPath = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+poto_file_name+"_org_"+str(index)+".jpg"
-        cv2.imwrite(fullPath, image)
+        image = capture_image[index - 1]
+        ImageUtils.write_image_by_id(image, template_id, index)
 
         if(lut != None):
-            os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/", exist_ok=True)
-            lut_Path = parser.get('settings', 'image')+"/"+template["id"]+"/original/"+lut+"/"+poto_file_name+"_org_"+str(index)+".jpg"
-            cv2.imwrite(lut_Path, image)
-            hefe = load_cube_file("file/cube/"+lut+".cube")
-            im = Image.open(lut_Path) ##########LOAD IMAGWE
-            im.filter(hefe).save(lut_Path,quality=100)
-            image = cv2.imread(lut_Path)
+            FileUtils.force_directories('{settings_image}/{template_id}/original/{lut}/'.format(settings_image=settings_image
+                                                                                               , template_id=template_id
+                                                                                               , lut=lut))
+            lut_path = FileUtils.get_lut_filename(template_id, lut, index)
+            ImageUtils.write_image_by_path(image, lut_path)
+            ImageUtils.save_filter(lut, lut_path)
+            image = ImageUtils.read_image_by_path(lut_path)
 
-        im = Image.fromarray(image, mode='RGB')
         loop_count = 1
         _pos = current["pos"]
+        im = ImageUtils.convert_to_rgb_array(image)
 
-        if (current["type"] == "6*2" or current["type"] == "2*6" ): ## DOUBLE
-            _idx = (index-1)*2 +1      ## 1 : 1  2: 3  3 : 5
+        if current["type"] == "6*2" or current["type"] == "2*6": ## DOUBLE
+            _idx = (index - 1) * 2 + 1      ## 1 : 1  2: 3  3 : 5
             loop_count = 2
         else:
             _idx = index
-        
-        for i in range(0,loop_count):
+
+        for i in range(0, loop_count):
             _idx = _idx + i
-            _item = current['pos'][(_idx-1)]
-            imWidth, imHeight = im.size
+            _item = current['pos'][(_idx - 1)]
+            im_width, im_height = im.size
 
             ## 618 721 = 603 : 704 ==> x = (618*704) / 721
-            _width = int((_item[2]*imHeight)/_item[3]) ## x:y = x':y'  x'=(x*y')/y
-            _height = imHeight
+            _width  = int((_item[2] * im_height) / _item[3])  # x:y = x':y'  x'=(x*y')/y
+            _height = im_height
 
-            #시작점. 
-            _startX = int((imWidth/2) - (_width/2))
+            #시작점.
+            _startX = int((im_width / 2) - (_width / 2))
             _startY = 0
 
-            _im = im.crop((_startX, _startY, _startX+_width, _startY+_height))  #1920 1080 ==>1080  , 1080
-            _im.thumbnail((_item[2],_item[3]))
+            _im = im.crop((_startX, _startY, _startX + _width, _startY + _height))  #1920 1080 ==>1080  , 1080
+            _im.thumbnail((_item[2], _item[3]))
             frame = np.array(_im)
 
             bgimg[ _item[1]:_item[1] + frame.shape[0], _item[0]:_item[0] + frame.shape[1]] = frame ## Image Addition
 
-    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/photo", exist_ok=True)
-    cv2.imwrite(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+poto_file_name+"_photo.jpg", bgimg); ## 캡처 이미지 저장
-    print_photo  = Image.open(parser.get('settings', 'image')+"/"+template["id"]+"/photo/"+poto_file_name+"_photo.jpg")
-    os.makedirs(parser.get('settings', 'image')+"/"+template["id"]+"/photo_print" , exist_ok=True)
+    FileUtils.force_directories('{settings_image}/{template_id}/photo'.format(settings_image=settings_image, template_id=template_id))
+    ImageUtils.write_image_by_path(bgimg, '{settings_image}/{template_id}/photo/{poto_file_name}_photo.jpg'.format(settings_image=settings_image
+                                                                                                                   , template_id=template_id
+                                                                                                                   , poto_file_name=poto_file_name))
+
+    ## 캡처 이미지 저장
+    print_photo  = Image.open(settings_image + "/" + template_id + "/photo/" + poto_file_name + "_photo.jpg")
+    os.makedirs(settings_image + "/" + template_id + "/photo_print" , exist_ok=True)
+
     if(current["type"] == "2*6"):
         print_photo = print_photo.crop((19, 19, 1798+19, 598+19))
+
     elif(current["type"] == "6*2"):
         print_photo = print_photo.crop((26, 19, 598+26, 1798+19))
-    print_photo.save(parser.get('settings', 'image')+"/"+template["id"]+"/photo_print/"+poto_file_name+"_print.jpg")
+
+    print_photo.save(settings_image + "/" + template_id + "/photo_print/" + poto_file_name + "_print.jpg")
 
     ## 동영상 생성
     common_makingvideo.put(current.copy(), capture_movie.copy(), poto_file_name, lut, template["id"])
@@ -186,6 +199,7 @@ def start_printing():
     ##-------------------------------------------------------
     global print_count
     cnt_print = 0
+
     if(current["type"] == "2*6"):
         cnt_print = int(print_count / 2)
     elif(current["type"] == "6*2"):
@@ -193,27 +207,28 @@ def start_printing():
     else:
         cnt_print = print_count
 
-
+    # region 아래 사이트(오픈소스) 참고해서 프린트 코드 작성
+    # https://withrobot.tistory.com/175
+    # https://gist.github.com/buptxge/2fc61a3f914645cf8ae2c9a258ca06c9
     for inx in range(0, cnt_print):
-        file_name = parser.get('settings', 'image') + "/" + template["id"] + "/photo/" + poto_file_name + "_photo.jpg"
-
+        file_name = '{settings_image}/{template_id}/photo/{poto_file_name}_photo.jpg'.format(settings_image=settings_image,
+                                                                                             template_id=template_id,
+                                                                                             poto_file_name=poto_file_name)
         printer_name = win32print.GetDefaultPrinter()
-
         hDC = win32ui.CreateDC()
         hDC.CreatePrinterDC(printer_name)
-
-        bmp = Image.open(file_name)
-        bmp = bmp.transpose(Image.ROTATE_90)
-
         hDC.StartDoc(file_name)
         hDC.StartPage()
 
+        bmp = Image.open(file_name)
+        bmp = bmp.transpose(Image.ROTATE_90)
         dib = ImageWin.Dib(bmp)
         dib.draw(hDC.GetHandleOutput (), (0, 0, bmp.size[0], bmp.size[1]))
 
         hDC.EndPage()
         hDC.EndDoc()
         hDC.DeleteDC()
+    # endregion
 
     eel.print_end()
 
@@ -223,7 +238,7 @@ def start_printing():
 @eel.expose
 def set_print_count(count):
     global print_count
-    print_count = count    
+    print_count = count
 
 ############################################################
 ## 현재 템플릿.
@@ -235,7 +250,7 @@ def set_template(_template):
 
 def get_template():
     print("run get_template()::::::::::::",template)
-    template 
+    template
 
 ############################################################
 ## 현재 상세 정보 .
@@ -301,7 +316,7 @@ def set_aspect_radio(target_template, client_height=None):
     global cam_pos
     _w = target_template[2]
     _y = target_template[3]
-    
+
     _h = 625
     if(client_height != None):
         _h = client_height
@@ -317,10 +332,8 @@ def set_aspect_radio(target_template, client_height=None):
     h = image_height
     x = int((image_width/2) - (w/2))
     y = 0
-    
-    cam_pos = [x,y,w,h]
 
-   
+    cam_pos = [x,y,w,h]
 
 ############################################################
 ## LUT FILE SETTING
@@ -333,16 +346,12 @@ def set_lut_file(lut_name):
     else:
         lut = lut_name
     print(lut)
-    
 
 ############################################################
 ## 화면 리사이즈 호출. 
 ############################################################
 def resize_capture():
     eel.resize_capture()
-
-
-
 
 ############################################################
 ## eel START  
@@ -355,7 +364,7 @@ def start_eel():
 
     eel.init(directory, ['.tsx', '.ts', '.jsx', '.js', '.html'])
     eel.spawn(loop)
-      
+
     global data_list, cube_list
     try:
         eel.resize_capture()
@@ -378,14 +387,14 @@ def loop():
 
             if(len(cam_pos)> 0):
                 frame = frame[cam_pos[1]:cam_pos[1]+cam_pos[3] , cam_pos[0]:cam_pos[0]+cam_pos[2]]
-            
+
             if(capturing == True):
                 capture_image[capture_number] = frame
                 addCaptureNumber()
                 capturing = False
             #print("move_saving:::",movie_saving)
             #print("movie_saving_count:::",movie_saving_count)
-            
+
             if(movie_saving == True):
                 if(movie_saving_count % int(current["movie_fps"]) == 0):
                     capture_movie[capture_number].append(frame)
@@ -396,7 +405,7 @@ def loop():
             jpeg_str = jpeg_b64.decode()
             eel.js_imshow(jpeg_str)
         eel.sleep(0.03)
-        
+
 ############################################################
 ## LOAD DATA FILE 
 ############################################################
@@ -416,8 +425,8 @@ def load_cube_list():
     global cube_list
     path = parser.get('settings', 'cube')
     file_list = os.listdir(path)
-    cube_list = [file for file in file_list if file.endswith(".cube")]    
-    
+    cube_list = [file for file in file_list if file.endswith(".cube")]
+
 ############################################################
 ## INIT 
 ############################################################
